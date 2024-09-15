@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Welcome to TeamProject Manager</h1>
+        <p>Manage your projects and tasks with ease!</p>
+        <a href="{{ url_for('routes.register') }}" class="btn btn-primary">Get Started</a>
+    </div>
+{% endblock %}

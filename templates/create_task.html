@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Task{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Create Task for Project: {{ project.title }}</h2>
+    <form method="POST" action="{{ url_for('routes.create_task', project_id=project.id) }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control") }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.status.label(class="form-label") }}
+            {{ form.status(class="form-control") }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.assigned_user_id.label(class="form-label") }}
+            {{ form.assigned_user_id(class="form-select") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    </form>
+</div>
+{% endblock %}
