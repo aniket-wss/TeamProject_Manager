@@ -1,133 +1,117 @@
 # TeamProject Manager
 
-## Video Demo
+## Project Overview
 
-[Link to project demo video]
+**TeamProject Manager** is a web-based application designed to streamline the management of projects and tasks within a team setting. It allows users to create projects, assign tasks to team members, and monitor progress. The goal is to offer a simple, intuitive interface for project management, providing both team members and managers with a platform to collaborate efficiently.
 
-## Description
+This project leverages **Flask**, **Flask-SQLAlchemy**, and **Flask-Login** to handle user authentication and session management, while **SQLite** is used as the database to store user data, projects, and tasks. The application focuses on task delegation, project tracking, and team collaboration, making it easy for team members to know what tasks are assigned to them and the overall project status.
 
-TeamProject Manager is a web-based application designed to help users manage their projects and tasks. The application allows users to create projects, assign tasks to users, and track the progress of the tasks. It also includes user authentication, so each user has access to their own dashboard and projects.
+## File Structure and Functionality
 
-## How the Program Works
+### 1. **app.py**
+This is the entry point of the application. It initializes the Flask app and sets up the necessary configurations for database connections and user sessions. The app uses `Flask-SQLAlchemy` to manage the database and `Flask-Login` to handle user authentication. The `@login_manager.user_loader` is used to load users during their sessions.
 
-1. **User Authentication:**  
-   Users can register an account, log in, and log out. Each user has their own dashboard and can only manage their own projects and tasks.
+Key functions:
+- **`db.create_all()`**: Ensures all the database tables are created before the app runs.
+- **`load_user(user_id)`**: Retrieves a user by their ID during login sessions.
+- **App context setup**: Ensures that the app is correctly instantiated and running in debug mode for development.
 
-2. **Project Creation:**  
-   After logging in, users can create new projects. Each project contains a title and description, and it's linked to the user who created it.
+### 2. **routes.py**
+This file manages all the core routes of the application. It acts as the bridge between the user interface (HTML templates) and the business logic. The routes are grouped using Flask's Blueprint feature to keep the code modular.
 
-3. **Task Management:**  
-   Once a project is created, users can add tasks to the project. Each task can be assigned to a specific user and contains a title, description, and status (e.g., Not Started, In Progress, Completed).
+Key routes:
+- **`/` (index)**: Displays the homepage of the application.
+- **`/dashboard`**: Shows the dashboard with an overview of the projects and tasks assigned to the logged-in user.
+- **`/create_project`**: Allows users to create new projects.
+- **`/project/<int:project_id>/tasks`**: Displays and allows the creation of tasks for a specific project.
+- **`/login` and `/register`**: Handle user authentication and registration.
+- **`/logout`**: Logs the user out and redirects to the homepage.
 
-4. **Dashboard:**  
-   The user’s dashboard displays a list of all their projects. For each project, the tasks are listed, allowing users to keep track of progress.
+### 3. **models.py**
+This file defines the database models using SQLAlchemy. It includes three key models: **User**, **Project**, and **Task**. These models outline the structure of the database and its relationships, allowing the app to interact with the stored data.
 
-5. **Flask and SQLAlchemy:**  
-   The application is built using the Flask web framework and SQLAlchemy for database interactions. User authentication is managed with Flask-Login, and password hashing is done using Werkzeug’s security utilities.
+- **User model**: Stores user information such as `username`, `email`, and `password`. It also has relationships with the Project and Task models to link users to their respective projects and tasks.
+- **Project model**: Represents a project created by a user. It contains fields like `title`, `description`, and `creator_id`. The project is linked to the tasks via a foreign key relationship.
+- **Task model**: Contains information about individual tasks, including the `title`, `description`, `status`, and the assigned user. Each task is associated with a project and a user.
 
-## How the Program Works Internally
+### 4. **forms.py**
+This file contains the forms used in the application, defined using Flask-WTF. The forms are used to capture user input for registering, logging in, creating projects, and creating tasks.
 
-- **Flask and Blueprints:**  
-  The program uses Flask blueprints to organize routes and handle various aspects of the app like user authentication, project creation, and task management.
+Key forms:
+- **RegisterForm**: Captures the user’s `username`, `email`, and password during registration.
+- **LoginForm**: Captures the `email` and password for user login.
+- **CreateProjectForm**: Allows the user to provide a title and description when creating a new project.
+- **CreateTaskForm**: Captures the task’s `title`, `description`, status, and assigns the task to a user.
 
-- **SQLAlchemy:**  
-  SQLAlchemy is used for managing database interactions. It handles the relationships between users, projects, and tasks. For example, each user can create multiple projects, and each project can have multiple tasks.
+### 5. **templates** (HTML files)
+The HTML templates provide the front-end views for the application. Flask's Jinja2 template engine is used for dynamic rendering. The templates extend from a base layout and are structured to keep the design consistent.
 
-- **Form Validation:**  
-  Flask-WTF is used for form validation. It ensures that user inputs (like project and task titles) meet certain criteria before they are accepted.
+- **base.html**: The base layout, containing the header and navigation menu.
+- **index.html**: The homepage of the app.
+- **dashboard.html**: Displays an overview of all projects and tasks for the logged-in user.
+- **create_project.html**: Provides the form for creating new projects.
+- **create_task.html**: Contains the form for creating and assigning tasks to team members.
+- **login.html** and **register.html**: Handle user login and registration.
 
-## How to Use the Program
+### 6. **static/styles.css**
+This file contains the custom CSS used to style the application's interface. It defines the layout, colors, and overall look of the forms, buttons, and navigation.
 
-1. **Registration:**  
-   Users must first register with a username, email, and password. The password is securely hashed before being stored in the database.
+### 7. **config.py**
+This file holds the configuration settings for the app, such as the secret key for sessions and the database URI. In this case, the database used is SQLite.
 
-2. **Login:**  
-   Once registered, users can log in to access their dashboard and start creating projects.
+### 8. **requirements.txt**
+Lists all the dependencies required to run the application. Some key dependencies include:
+- Flask
+- Flask-SQLAlchemy
+- Flask-Login
+- Flask-WTF
 
-3. **Creating Projects and Tasks:**  
-   From the dashboard, users can create projects and assign tasks to different team members. Each task has a status that can be updated as the task progresses.
-
-4. **Managing Tasks:**  
-   Users can view all tasks for a given project and track their progress directly from the dashboard.
-
-## Installation
-
-### 1. Clone the Repository
-
-Download the repository using the following command:
-
-```bash
-git clone https://github.com/yourusername/teamproject_manager.git
+Users can install these dependencies using the command:
 ```
-
-### 2. Navigate to the Project Directory
-
-After downloading, open the terminal and navigate to the project directory:
-
-```bash
-cd teamproject_manager
-```
-
-### 3. Install Required Libraries
-
-Use `pip` to install the required Python libraries. All necessary libraries are listed in the `requirements.txt` file.
-
-```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## Design Choices
 
-### Running the Application
+### 1. **Database Choice**
+I chose **SQLite** for simplicity and ease of setup. SQLite works well for small to medium-sized applications like this and requires no separate server configuration, making it ideal for rapid development.
 
-Run the Flask application by executing the following command in the project directory:
+### 2. **Modular Blueprint Structure**
+The use of Flask Blueprints allows the application to remain modular. This is particularly useful when scaling the app, as different components (like user management or project management) can be separated into their own modules.
 
-```bash
+### 3. **User Authentication**
+Flask-Login handles user authentication seamlessly, allowing the app to manage sessions and restrict access to certain routes. I opted for hashed passwords using the `pbkdf2:sha256` algorithm to ensure secure storage of user credentials.
+
+### 4. **Task Delegation**
+The ability to assign tasks to specific team members is a key feature. It enhances the collaborative aspect of the app, ensuring that team members have clarity on their responsibilities within a project.
+
+## Challenges and Future Improvements
+
+One of the key challenges was managing the relationships between users, projects, and tasks in a way that was efficient yet flexible. Handling user roles (like managers vs. team members) could be a feature for future improvements. Adding more complex features like real-time updates or notifications when tasks are updated would also enhance user experience.
+
+In the future, I would also consider expanding this app to include features like time tracking, progress reports, and integrations with third-party tools like Slack or Trello.
+
+## Installation and Usage
+
+1. Clone the repository:
+```
+git clone https://github.com/aniket_wss/TeamProject_Manager.git
+```
+
+2. Install the required dependencies:
+```
+pip install -r requirements.txt
+```
+
+3. Run the Flask app:
+```
 python app.py
 ```
 
-This will start the development server, and the application will be accessible at `http://127.0.0.1:5000/`.
+4. Open your web browser and navigate to `http://127.0.0.1:5000` to access the application.
 
-### Testing the Application
-
-To run tests, use the `pytest` testing framework. The test cases are included in the `test_app.py` file:
-
-```bash
+5. To run tests, use the following command:
+```
 pytest test_app.py
 ```
 
-## Input and Output
-
-When you run the application:
-
-- **Input:** Users input project details and tasks via forms in the web interface.
-  
-- **Output:** The user is presented with a dashboard showing their projects and the associated tasks. Task statuses can be updated, and the progress is reflected in real-time.
-
-### Example Images
-
-Here are examples of the program’s input forms and output pages:
-
-#### Dashboard View:
-
-![Dashboard Example](link_to_image)
-
-#### Project Creation Form:
-
-![Project Creation Example](link_to_image)
-
-## Important Notes
-
-- The application includes user authentication, so each user has their own isolated dashboard.
-- Project and task data are stored in an SQLite database, which can be migrated to other database systems like PostgreSQL if necessary.
-  
-## References
-
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
-- [Flask-Login Documentation](https://flask-login.readthedocs.io/en/latest/)
-- [Flask-WTF Documentation](https://flask-wtf.readthedocs.io/)
-
----
-
-This `README.md` file provides a clear and detailed explanation of how to set up and run your project. Be sure to update links and any images or videos specific to your project!
