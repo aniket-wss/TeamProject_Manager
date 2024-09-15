@@ -58,6 +58,12 @@ def login():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        # Check if the username or email already exists
+        existing_user = User.query.filter((User.username == form.username.data) | (User.email == form.email.data)).first()
+        if existing_user:
+            flash('Username or email already exists, please choose another one.', 'danger')
+            return redirect(url_for('routes.register'))
+
         # Hash the password before storing it in the database
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
         # Create new user
@@ -68,7 +74,7 @@ def register():
 
         # Log the user in
         login_user(new_user)
-        return redirect(url_for('routes.dashboard'))  # Use the blueprint prefix 'routes'
+        return redirect(url_for('routes.dashboard'))
 
     return render_template('register.html', form=form)
 
